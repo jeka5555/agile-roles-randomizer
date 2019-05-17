@@ -1,0 +1,17 @@
+{
+    "printWidth": 160,
+    "singleQuote": true,
+    "useTabs": false,
+    "tabWidth": 4,
+    "semicolons": true,
+    "bracketSpacing": true,
+    "trailingComma": "all",
+    "overrides": [
+        {
+            "files": "*.scss",
+            "options": {
+                "tabWidth": 2
+            }
+        }
+    ]
+}
