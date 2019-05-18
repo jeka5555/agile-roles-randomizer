@@ -54,7 +54,7 @@
 </div>
 
 <div class="button-container">
-    <button (click)="randomize()" class="app-button" mat-raised-button color="primary">
+    <button (click)="randomize()" [disabled]="randomInProgress" class="app-button" mat-raised-button color="primary">
         Выбрать новые роли
     </button>
 </div>

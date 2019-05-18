@@ -8,12 +8,14 @@ import { AppComponent } from './app.component';
 import { RandomizerComponent } from './randomizer/randomizer.component';
 import { RouterModule } from '@angular/router';
 import { SettingsComponent } from './settings/settings.component';
+import { CdkTableModule } from '@angular/cdk/table';
 
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
         AppMaterialModule,
+        CdkTableModule,
         BrowserAnimationsModule,
         RouterModule.forRoot([
             {

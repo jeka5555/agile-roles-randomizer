@@ -75,6 +75,8 @@ export class RandomizerComponent implements OnInit {
 
     public checked = {};
     public chosenRoles: ChosenRoleInterface[] = [];
+    public randomizeCount = 0;
+    public randomInProgress = false;
 
     ngOnInit(): void {
         tcrmfCCTeam.forEach(teamMember => (this.checked[teamMember.tag] = true));
@@ -89,38 +91,51 @@ export class RandomizerComponent implements OnInit {
     }
 
     public randomize(): void {
-        const teamForSM = this.checkedTeamMembers
-            .filter(member => member.availableRoles.some(role => role === Roles.SM))
-            .filter(member => !this.wasAlreadySelectedLastWeek(member));
-        const chosenSM = teamForSM[this.getRandomMember(teamForSM.length)].tag;
+        this.randomInProgress = true;
 
-        const teamForRM = this.checkedTeamMembers
-            .filter(member => member.availableRoles.some(role => role === Roles.RM))
-            .filter(member => member.tag !== chosenSM)
-            .filter(member => !this.wasAlreadySelectedLastWeek(member));
-        const chosenRM = teamForRM[this.getRandomMember(teamForRM.length)].tag;
+        setTimeout(() => {
+            const teamForSM = this.checkedTeamMembers
+                .filter(member => member.availableRoles.some(role => role === Roles.SM))
+                .filter(member => !this.wasAlreadySelectedLastWeek(member));
+            const chosenSM = teamForSM[this.getRandomMember(teamForSM.length)].tag;
 
-        const teamForSSM = this.checkedTeamMembers
-            .filter(member => member.availableRoles.some(role => role === Roles.SSM))
-            .filter(member => member.tag !== chosenSM)
-            .filter(member => member.tag !== chosenRM)
-            .filter(member => !this.wasAlreadySelectedLastWeek(member));
-        const chosenSSM = teamForSSM[this.getRandomMember(teamForSSM.length)].tag;
+            const teamForRM = this.checkedTeamMembers
+                .filter(member => member.availableRoles.some(role => role === Roles.RM))
+                .filter(member => member.tag !== chosenSM)
+                .filter(member => !this.wasAlreadySelectedLastWeek(member));
+            const chosenRM = teamForRM[this.getRandomMember(teamForRM.length)].tag;
 
-        this.chosenRoles = [
-            {
-                tag: chosenSM,
-                roleName: 'Scrum Master',
-            },
-            {
-                tag: chosenRM,
-                roleName: 'Release Manager',
-            },
-            {
-                tag: chosenSSM,
-                roleName: 'Sentry and SD Master',
-            },
-        ];
+            const teamForSSM = this.checkedTeamMembers
+                .filter(member => member.availableRoles.some(role => role === Roles.SSM))
+                .filter(member => member.tag !== chosenSM)
+                .filter(member => member.tag !== chosenRM)
+                .filter(member => !this.wasAlreadySelectedLastWeek(member));
+            const chosenSSM = teamForSSM[this.getRandomMember(teamForSSM.length)].tag;
+
+            this.chosenRoles = [
+                {
+                    tag: chosenSM,
+                    roleName: 'Scrum Master',
+                },
+                {
+                    tag: chosenRM,
+                    roleName: 'Release Manager',
+                },
+                {
+                    tag: chosenSSM,
+                    roleName: 'Sentry and SD Master',
+                },
+            ];
+
+            this.randomizeCount++;
+
+            if (this.randomizeCount < 50) {
+                this.randomize();
+            } else {
+                this.randomizeCount = 0;
+                this.randomInProgress = false;
+            }
+        }, 2 * this.randomizeCount);
     }
 
     public getRandomMember(length: number): number {

@@ -3,11 +3,11 @@
 </mat-toolbar>
 
 <div class="nav-container">
-    <mat-tab-group (selectedTabChange)="navigate($event)">
+    <mat-tab-group [selectedIndex]="selectedIndex" (selectedTabChange)="navigate($event)">
         <mat-tab label="Рандомайзер"></mat-tab>
         <mat-tab label="Настройки"></mat-tab>
     </mat-tab-group>
-    <mat-divider style="width: 100%;"></mat-divider>
+    <mat-divider class="divider"></mat-divider>
 </div>
 
 <router-outlet></router-outlet>

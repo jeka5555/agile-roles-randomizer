@@ -1,3 +1,53 @@
-<p>
-  settings works!
-</p>
+<div class="cards-content">
+    <div class="row-container">
+        <mat-card>
+            <mat-card-content>
+                <div class="inputs-container">
+                    <div>
+                        <h2 class="card-title">Роли:</h2> 
+                        <div *ngFor="let role of roles" class="input-container">
+                            <input [value]="role" class="item-input" />
+                            <button mat-flat-button color="accent" class="remove-item-button">X</button>
+                        </div>
+                    </div>
+                    <button mat-raised-button color="primary" class="add-item-button">Добавить</button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-content>
+                <div class="inputs-container">
+                    <div>
+                        <h2 class="card-title">Команда:</h2> 
+                        <div *ngFor="let teamMember of teamMembers" class="input-container">
+                            <input [value]="teamMember" class="item-input" />
+                            <button mat-flat-button color="accent" class="remove-item-button">X</button>
+                        </div>
+                    </div>
+                    <button mat-raised-button color="primary" class="add-item-button">Добавить</button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <div class="row-container">
+        <mat-card>
+            <mat-card-content>
+                <h2 class="card-title">Таблица ролей:</h2>
+                <mat-table [dataSource]="teamMembers">
+                    <ng-container cdkColumnDef="name">
+                        <mat-header-cell *cdkHeaderCellDef>Имя / роль</mat-header-cell>
+                        <mat-cell *cdkCellDef="let name"> 
+                            {{ name }}
+                        </mat-cell>
+                    </ng-container>
+                
+                    <mat-header-row *cdkHeaderRowDef="['name']"></mat-header-row>
+                    
+                    <mat-row *cdkRowDef="let row; columns: ['name']"></mat-row>
+                </mat-table>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
