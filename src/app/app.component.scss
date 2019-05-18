@@ -1,54 +1,14 @@
 .toolbar {
-    display: flex; 
-    justify-content: center;
-}
-
-.app-content {
-  padding: 5px;
-  display: flex; 
+  display: flex;
   justify-content: center;
 }
 
-.app-content mat-card {
-  margin: 5px;
-  padding: 50px;
+mat-tab-group {
+  flex-direction: row;
 }
 
-.app-content mat-checkbox {
-  margin: 10px;
-  font-size: 16px;
-}
-
-.app-content mat-form-field {
-    width: 250px;
-  }
-
-.app-button {
-  margin: 5px;
-}
-
-.card-title {
-  margin: 10px 0;
-  color: rgba(0, 0, 0, 0.54);
-}
-
-.current-roles {
-    display: flex; 
-    flex-direction: column;
-}
-
-.chosen-role {
-    margin: 20px 0px;
-    font-size: 16px;
-    line-height: 1.6;
-}
-
-.role-name {
-    color: rgba(0,0,0,0.54);
-}
-
-.button-container {
-    display: flex; 
-    justify-content: center; 
-    margin-top: 20px;
+.nav-container {
+  display: flex; 
+  align-items: center; 
+  flex-direction: column;
 }

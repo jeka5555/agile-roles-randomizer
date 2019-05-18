@@ -1,18 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
 
-describe('AppComponent', () => {
-    let component: AppComponent;
-    let fixture: ComponentFixture<AppComponent>;
+import { RandomizerComponent } from './randomizer.component';
+
+describe('RandomizerComponent', () => {
+    let component: RandomizerComponent;
+    let fixture: ComponentFixture<RandomizerComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [AppComponent],
+            declarations: [RandomizerComponent],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AppComponent);
+        fixture = TestBed.createComponent(RandomizerComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
