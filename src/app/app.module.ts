@@ -9,6 +9,7 @@ import { RandomizerComponent } from './randomizer/randomizer.component';
 import { RouterModule } from '@angular/router';
 import { SettingsComponent } from './settings/settings.component';
 import { CdkTableModule } from '@angular/cdk/table';
+import { RolesTableComponent } from './roles-table/roles-table.component';
 
 @NgModule({
     imports: [
@@ -28,7 +29,7 @@ import { CdkTableModule } from '@angular/cdk/table';
             },
         ]),
     ],
-    declarations: [AppComponent, RandomizerComponent, SettingsComponent],
+    declarations: [AppComponent, RandomizerComponent, SettingsComponent, RolesTableComponent],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
