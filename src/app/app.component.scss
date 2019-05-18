@@ -1,92 +1,54 @@
-mat-sidenav-container.m2app-dark {
-  background: black;
+.toolbar {
+    display: flex; 
+    justify-content: center;
 }
 
 .app-content {
   padding: 5px;
+  display: flex; 
+  justify-content: center;
 }
 
 .app-content mat-card {
   margin: 5px;
-}
-
-.app-sidenav {
-  min-width: 200px;
+  padding: 50px;
 }
 
 .app-content mat-checkbox {
   margin: 10px;
-}
-
-.app-toolbar-filler {
-  flex: 1 1 auto;
-}
-
-.app-fab {
-  position: fixed !important;
-  bottom: 20px;
-  right: 20px;
-}
-
-.app-spinner {
-  height: 30px;
-  width: 30px;
-  display: inline-block;
-}
-
-.app-input-icon {
   font-size: 16px;
-  padding: 0 5px;
 }
 
-.app-menu-button {
-  padding: 0;
-  min-width: 50px;
-}
+.app-content mat-form-field {
+    width: 250px;
+  }
+
 .app-button {
   margin: 5px;
 }
 
-.app-list {
-  border: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.app-progress {
-  margin: 5px;
-}
-
-.example-h2 {
+.card-title {
   margin: 10px 0;
   color: rgba(0, 0, 0, 0.54);
 }
 
-.example-section {
-  display: flex;
-  align-content: center;
-  align-items: center;
-  height: 60px;
+.current-roles {
+    display: flex; 
+    flex-direction: column;
 }
 
-.example-margin {
-  margin: 10px;
+.chosen-role {
+    margin: 20px 0px;
+    font-size: 16px;
+    line-height: 1.6;
 }
 
-.mat-slider-horizontal {
-  width: 300px;
+.role-name {
+    color: rgba(0,0,0,0.54);
 }
 
-.mat-slider-vertical {
-  height: 300px;
-}
-
-mat-chip {
-  max-width: 200px;
-}
-
-.app-sidebar-button {
-  width: inherit;
-}
-
-.example-spacer {
-  flex: 1 1 auto;
+.button-container {
+    display: flex; 
+    justify-content: center; 
+    margin-top: 20px;
 }

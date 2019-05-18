@@ -1,73 +1,64 @@
+<mat-toolbar color="primary" class="toolbar">
+    <span>Agile Roles Randomizer</span>
+</mat-toolbar>
 
-  <mat-toolbar color="primary" style="display: flex; justify-content: center;">
-    <span class="title">Agile Roles Randomizer</span>
-  </mat-toolbar>
-
-  <div class="app-content" style="display: flex; justify-content: center;">
-    <!-- Material Checkbox -->
-    <mat-card style="padding: 50px;">
-      <mat-card-content>
-        <h2 class="example-h2">Команда</h2>
-        <div *ngFor="let teamMember of allTeamMembers">
-          <mat-checkbox [(ngModel)]="checked[teamMember.tag]" [checked]="true" color="primary" style="font-size: 16px;">
-            {{ teamMember.tag }}
-          </mat-checkbox>
-        </div>
-      </mat-card-content>
+<div class="app-content">
+    <mat-card>
+        <mat-card-content>
+            <h2 class="card-title">Команда</h2>
+            <div *ngFor="let teamMember of allTeamMembers">
+                <mat-checkbox [(ngModel)]="checked[teamMember.tag]" [checked]="true" color="primary">
+                    {{ teamMember.tag }}
+                </mat-checkbox>
+            </div>
+        </mat-card-content>
     </mat-card>
-    <!-- /Material Checkbox -->
 
-    <!-- Material Select -->
-    <mat-card style="padding: 50px;">
-      <mat-card-content style="display: flex; flex-direction: column; padding-top: 12px;">
-        <h2 class="example-h2">Текущие роли:</h2>
+    <mat-card>
+        <mat-card-content class="current-roles">
+            <h2 class="card-title">Текущие роли:</h2>
 
-        <mat-form-field style="width: 250px;">
-          <mat-select [(ngModel)]="takenRoles.SM" placeholder="Scrum Master" [(ngModel)]="selectedValue">
-            <mat-option *ngFor="let teamMember of getTeamMembersForRole('SM')" [value]="teamMember.tag">
-              {{ teamMember.tag }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            <mat-form-field>
+                <mat-select [(ngModel)]="takenRoles.SM" placeholder="Scrum Master">
+                    <mat-option *ngFor="let teamMember of getTeamMembersForRole('SM')" [value]="teamMember.tag">
+                        {{ teamMember.tag }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
 
-        <mat-form-field style="width: 250px;">
-          <mat-select [(ngModel)]="takenRoles.RM" placeholder="Release Manager">
-            <mat-option *ngFor="let teamMember of getTeamMembersForRole('RM')" [value]="teamMember.tag">
-              {{ teamMember.tag }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            <mat-form-field>
+                <mat-select [(ngModel)]="takenRoles.RM" placeholder="Release Manager">
+                    <mat-option *ngFor="let teamMember of getTeamMembersForRole('RM')" [value]="teamMember.tag">
+                        {{ teamMember.tag }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
 
-        <mat-form-field style="width: 250px;">
-          <mat-select [(ngModel)]="takenRoles.SSM" placeholder="Sentry And SD Master">
-            <mat-option *ngFor="let teamMember of getTeamMembersForRole('SSM')" [value]="teamMember.tag">
-              {{ teamMember.tag }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-      </mat-card-content>
+            <mat-form-field>
+                <mat-select [(ngModel)]="takenRoles.SSM" placeholder="Sentry And SD Master">
+                    <mat-option *ngFor="let teamMember of getTeamMembersForRole('SSM')" [value]="teamMember.tag">
+                        {{ teamMember.tag }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-card-content>
     </mat-card>
-    <!-- /Material Select -->
 
-    <!-- Material Button -->
-    <mat-card style="padding: 50px;">
-      <mat-card-content>
-        <h2 class="example-h2">Выбранные роли:</h2>
-        <ng-container *ngFor="let chosenRole of chosenRoles">
-          <div style="margin: 20px 0px;font-size: 16px;line-height: 1.6;">
-            <div style="color: rgba(0,0,0,0.54);"><b>{{ chosenRole.roleName }}:</b></div> 
-            <div>{{ chosenRole.tag }}</div>
-          </div>
-        </ng-container>
-      </mat-card-content>
+    <mat-card>
+        <mat-card-content>
+            <h2 class="card-title">Выбранные роли:</h2>
+            <ng-container *ngFor="let chosenRole of chosenRoles">
+                <div class="chosen-role">
+                    <div class="role-name"><b>{{ chosenRole.roleName }}:</b></div>
+                    <div>{{ chosenRole.tag }}</div>
+                </div>
+            </ng-container>
+        </mat-card-content>
     </mat-card>
-    <!-- /Material Button -->
+</div>
 
-  </div>
-
-<div style="display: flex; justify-content: center; margin-top: 20px;">
-  <button (click)="randomize()" class="app-button" mat-raised-button color="primary" style="">
-    Выбрать новые роли
-  </button>
+<div class="button-container">
+    <button (click)="randomize()" class="app-button" mat-raised-button color="primary">
+        Выбрать новые роли
+    </button>
 </div>
