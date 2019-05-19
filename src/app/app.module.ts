@@ -5,15 +5,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { AppMaterialModule } from './app.material.module';
 import { AppComponent } from './app.component';
-import { RandomizerComponent } from './randomizer/randomizer.component';
 import { RouterModule } from '@angular/router';
-import { SettingsComponent } from './settings/settings.component';
 import { CdkTableModule } from '@angular/cdk/table';
-import { RolesTableComponent } from './roles-table/roles-table.component';
+import { CommonModule } from '@angular/common';
+import { RandomizerComponent } from './components/randomizer/randomizer.component';
+import { SettingsComponent } from './components/settings/settings.component';
+import { RolesTableComponent } from './components/roles-table/roles-table.component';
 
 @NgModule({
     imports: [
         BrowserModule,
+        CommonModule,
         FormsModule,
         AppMaterialModule,
         CdkTableModule,

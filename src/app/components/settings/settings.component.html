@@ -6,7 +6,7 @@
                     <div>
                         <h2 class="card-title">Роли:</h2> 
                         <div *ngFor="let role of roles; let i = index; trackBy: trackByFn" class="input-container">
-                            <input [value]="role" class="item-input" />
+                            <input [value]="role" (keyup)="onRoleValueChange($event, i)" class="item-input" />
                             <button 
                                 (click)="removeRole(i)" 
                                 mat-flat-button 
@@ -58,7 +58,7 @@
 
         <mat-card>
             <mat-card-content>
-                <h2 class="card-title">Таблица ролей:</h2>
+                <h2 class="card-title">Таблица доступных ролей:</h2>
                 <app-roles-table [teamMembers]="teamMembers" [roles]="roles"></app-roles-table>
             </mat-card-content>
         </mat-card>

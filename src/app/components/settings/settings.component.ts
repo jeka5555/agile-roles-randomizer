@@ -22,7 +22,7 @@ export class SettingsComponent {
     public onRoleValueChange(event: Event, index: number): void {
         const newValue = (event.target as HTMLInputElement).value;
 
-        this.roles[index] = newValue;
+        this.roles = [...this.roles.slice(0, index), newValue, ...this.roles.slice(index + 1, this.roles.length)];
     }
 
     public removeRole(roleIndex: number): void {
