@@ -1,0 +1,20 @@
+<mat-table [dataSource]="filteredTeamMembers" class="table">
+    <ng-container cdkColumnDef="name">
+        <mat-header-cell *cdkHeaderCellDef> Имя / роль </mat-header-cell>
+        <mat-cell *cdkCellDef="let row"> {{ row }} </mat-cell>
+    </ng-container>
+
+    <ng-container *ngFor="let role of filteredRoles; let i = index;" [cdkColumnDef]="role">
+        <mat-header-cell *cdkHeaderCellDef class="centered"> {{ role }} </mat-header-cell>
+        <mat-cell *cdkCellDef="let row; let j = index;" class="centered"> 
+            <mat-checkbox 
+                [checked]="rolesTableCheckboxesState[j] ? rolesTableCheckboxesState[j][i] : false" 
+                (change)="onCheckBoxChange(j, i)" 
+                color="primary">
+            </mat-checkbox> 
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *cdkHeaderRowDef="columns"></mat-header-row>
+    <mat-row *cdkRowDef="let row; columns: columns"></mat-row>
+</mat-table>

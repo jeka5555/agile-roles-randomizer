@@ -1,0 +1,49 @@
+.cards-content {
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+}
+
+mat-card {
+  margin: 5px;
+  padding: 50px;
+}
+
+mat-checkbox {
+  margin: 10px;
+  font-size: 16px;
+}
+
+mat-form-field {
+  width: 250px;
+}
+
+.app-button {
+  margin: 5px;
+}
+
+.card-title {
+  margin: 10px 0;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.current-roles {
+  display: flex;
+  flex-direction: column;
+}
+
+.chosen-role {
+  margin: 20px 0px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.role-name {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}

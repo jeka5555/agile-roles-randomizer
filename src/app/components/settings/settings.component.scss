@@ -1,0 +1,60 @@
+.cards-content {
+  padding: 5px;
+  display: flex;
+  
+  flex-direction: column;
+}
+
+.card-title {
+  margin: 10px 0;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+mat-card {
+  margin: 5px;
+  padding: 50px;
+}
+
+mat-card-content {
+  height: 100%;
+}
+
+.inputs-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.input-container {
+  display: flex;
+  margin-top: 12px;
+}
+
+.item-input {
+  width: 180px;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.add-item-button {
+  margin-top: 16px;
+}
+
+.remove-item-button {
+  margin-left: 8px;
+  height: 31px;
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  transform: scale(0.8);
+  font-weight: bold;
+}
+
+.row-container {
+  display: flex; 
+  justify-content: center;
+}

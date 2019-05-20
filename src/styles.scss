@@ -1,11 +1,18 @@
-/* You can add global styles to this file, and also import other style files */
 @import 'angular-material-demo-theme.scss';
 
 body {
   margin: 0;
 }
-/*
-.grid-test-1 > figure.mat-figure {
-  justify-content: flex-start !important;
+
+mat-tab-header {
+  border-bottom: 0 !important;
 }
-*/
+
+.mat-mini-fab .mat-button-wrapper {
+  padding: 0 !important;
+}
+
+.mat-flat-button {
+  min-width: unset !important;
+  line-height: unset !important;
+}

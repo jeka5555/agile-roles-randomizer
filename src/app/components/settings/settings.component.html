@@ -1,0 +1,66 @@
+<div class="cards-content">
+    <div class="row-container">
+        <mat-card>
+            <mat-card-content>
+                <div class="inputs-container">
+                    <div>
+                        <h2 class="card-title">Роли:</h2> 
+                        <div *ngFor="let role of roles; let i = index; trackBy: trackByFn" class="input-container">
+                            <input [value]="role" (keyup)="onRoleValueChange($event, i)" class="item-input" />
+                            <button 
+                                (click)="removeRole(i)" 
+                                mat-flat-button 
+                                color="accent" 
+                                class="remove-item-button">
+                                
+                                X
+                            </button>
+                        </div>
+                    </div>
+                    <button 
+                        (click)="addFormControlForRole()" 
+                        mat-raised-button 
+                        color="primary" 
+                        class="add-item-button">
+                        
+                        Добавить
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-content>
+                <div class="inputs-container">
+                    <div>
+                        <h2 class="card-title">Команда:</h2> 
+                        <div *ngFor="let teamMember of teamMembers; let i = index; trackBy: trackByFn" class="input-container">
+                            <input [value]="teamMember" (keyup)="onTeamMemberValueChange($event, i)" class="item-input" />
+                            <button 
+                                (click)="removeTeamMember(i)"
+                                mat-flat-button color="accent" 
+                                class="remove-item-button">
+                                
+                                X
+                            </button>
+                        </div>
+                    </div>
+                    <button 
+                        (click)="addFormControlForTeamMember()" 
+                        mat-raised-button color="primary" 
+                        class="add-item-button">
+                        
+                        Добавить
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-content>
+                <h2 class="card-title">Таблица доступных ролей:</h2>
+                <app-roles-table [teamMembers]="teamMembers" [roles]="roles"></app-roles-table>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
