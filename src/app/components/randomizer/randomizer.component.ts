@@ -1,6 +1,11 @@
+import { ChosenRoleInterface } from '../../interfaces/chosen-role.interface';
 import { RolesMapInterface } from '../../interfaces/roles-map.interface';
 import { DataStorageService } from '../../services/data-storage.service';
 import { Component, OnInit } from '@angular/core';
+import { MatSelectChange } from '@angular/material';
+
+const RANDOMIZE_ITERATIONS_COUNT = 50;
+const RANDOMIZE_MILLISECONDS_COUNT = 2;
 
 @Component({
     selector: 'app-randomizer',
@@ -13,7 +18,8 @@ export class RandomizerComponent implements OnInit {
     public rolesMap: RolesMapInterface[] = this.dataStorageService.rolesMap;
 
     public checked: Record<string, boolean> = {};
-    public chosenRoles: Record<string, string> = {};
+    public lastIterationRoles: Record<string, string> = {};
+    public chosenRoles: ChosenRoleInterface[];
 
     public randomizeCount = 0;
     public randomInProgress = false;
@@ -34,61 +40,47 @@ export class RandomizerComponent implements OnInit {
             .map(({ teamMember }: RolesMapInterface) => teamMember);
     }
 
+    public onSelectChange({ value }: MatSelectChange, role: string): void {
+        this.lastIterationRoles[role] = value;
+    }
+
     public randomize(): void {
         this.randomInProgress = true;
 
         setTimeout(() => {
-            // const teamForSM = this.checkedTeamMembers
-            //     .filter(member => member.availableRoles.some(role => role === Roles.SM))
-            //     .filter(member => !this.wasAlreadySelectedLastWeek(member));
-            // const chosenSM = teamForSM[this.getRandomMember(teamForSM.length)].tag;
-
-            // const teamForRM = this.checkedTeamMembers
-            //     .filter(member => member.availableRoles.some(role => role === Roles.RM))
-            //     .filter(member => member.tag !== chosenSM)
-            //     .filter(member => !this.wasAlreadySelectedLastWeek(member));
-            // const chosenRM = teamForRM[this.getRandomMember(teamForRM.length)].tag;
-
-            // const teamForSSM = this.checkedTeamMembers
-            //     .filter(member => member.availableRoles.some(role => role === Roles.SSM))
-            //     .filter(member => member.tag !== chosenSM)
-            //     .filter(member => member.tag !== chosenRM)
-            //     .filter(member => !this.wasAlreadySelectedLastWeek(member));
-            // const chosenSSM = teamForSSM[this.getRandomMember(teamForSSM.length)].tag;
-
-            // this.chosenRoles = [
-            //     {
-            //         tag: chosenSM,
-            //         roleName: 'Scrum Master',
-            //     },
-            //     {
-            //         tag: chosenRM,
-            //         roleName: 'Release Manager',
-            //     },
-            //     {
-            //         tag: chosenSSM,
-            //         roleName: 'Sentry and SD Master',
-            //     },
-            // ];
+            this.chosenRoles = [];
+            this.roles.forEach((role: string) => {
+                this.chosenRoles.push({
+                    role,
+                    teamMember: this.getRandomMember(
+                        this.getTeamMembersForRole(role)
+                            .filter(
+                                (teamMember: string) =>
+                                    !this.chosenRoles.some((chosenRole: ChosenRoleInterface) => chosenRole.teamMember === teamMember),
+                            )
+                            .filter((teamMember: string) => !this.wasAlreadySelectedLastIteration(teamMember)),
+                    ),
+                });
+            });
 
             this.randomizeCount++;
 
-            if (this.randomizeCount < 50) {
+            if (this.randomizeCount < RANDOMIZE_ITERATIONS_COUNT) {
                 this.randomize();
             } else {
                 this.randomizeCount = 0;
                 this.randomInProgress = false;
             }
-        }, 2 * this.randomizeCount);
+        }, RANDOMIZE_MILLISECONDS_COUNT * this.randomizeCount);
     }
 
-    public getRandomMember(length: number): number {
-        return Math.floor(Math.random() * length);
+    public getRandomMember<T>(teamMembers: T[]): T {
+        return teamMembers[Math.floor(Math.random() * teamMembers.length)];
     }
 
-    // private wasAlreadySelectedLastWeek(teamMember: string): boolean {
-    //     // return Object.keys(this.takenRoles)
-    //     //     .map((key: string) => this.takenRoles[key])
-    //     //     .includes(tag);
-    // }
+    private wasAlreadySelectedLastIteration(teamMember: string): boolean {
+        return Object.keys(this.lastIterationRoles)
+            .map((key: string) => this.lastIterationRoles[key])
+            .includes(teamMember);
+    }
 }

@@ -1,5 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { AppMaterialModule } from './app.material.module';
+import { RouterTestingModule } from '@angular/router/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('AppComponent', () => {
     let component: AppComponent;
@@ -7,6 +10,7 @@ describe('AppComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [AppMaterialModule, RouterTestingModule, BrowserAnimationsModule],
             declarations: [AppComponent],
         }).compileComponents();
     }));

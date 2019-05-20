@@ -15,7 +15,7 @@
             <h2 class="card-title">Текущие роли:</h2>
 
             <mat-form-field *ngFor="let role of roles">
-                <mat-select [(ngModel)]="chosenRoles[role]" [placeholder]="role">
+                <mat-select [placeholder]="role" (selectionChange)="onSelectChange($event, role)">
                     <mat-option *ngFor="let teamMember of getTeamMembersForRole(role)" [value]="teamMember">
                         {{ teamMember }}
                     </mat-option>
@@ -28,10 +28,10 @@
     <mat-card>
         <mat-card-content>
             <h2 class="card-title">Выбранные роли:</h2>
-            <ng-container *ngFor="let role of roles">
+            <ng-container *ngFor="let chosenRole of chosenRoles">
                 <div class="chosen-role">
-                    <div class="role-name"><b>{{ role }}:</b></div>
-                    <div>{{ role }}</div>
+                    <div class="role-name"><b>{{ chosenRole.role }}:</b></div>
+                    <div>{{ chosenRole.teamMember }}</div>
                 </div>
             </ng-container>
         </mat-card-content>
