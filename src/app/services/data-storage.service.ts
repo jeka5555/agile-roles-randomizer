@@ -1,20 +1,20 @@
 import { RolesMapInterface } from '../interfaces/roles-map.interface';
 import { Injectable } from '@angular/core';
 
-const defaultRoles = ['Scrum Master', 'Release Manager'];
-const defaultTeamMembers = ['Name 1', 'Name 2', 'Name 3'];
-const defaultRolesMap = [
+const defaultRoles: string[] = ['Scrum Master', 'Release Manager'];
+const defaultTeamMembers: string[] = ['Name 1', 'Name 2', 'Name 3'];
+const defaultRolesMap: RolesMapInterface[] = [
     {
         teamMember: 'Name 1',
-        teamMemberRoles: [false, false],
+        teamMemberRoles: ['Scrum Master', 'Release Manager'],
     },
     {
         teamMember: 'Name 2',
-        teamMemberRoles: [false, false],
+        teamMemberRoles: ['Scrum Master', 'Release Manager'],
     },
     {
         teamMember: 'Name 3',
-        teamMemberRoles: [false, false],
+        teamMemberRoles: ['Scrum Master', 'Release Manager'],
     },
 ];
 

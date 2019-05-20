@@ -1,3 +1,4 @@
+import { RolesMapInterface } from '../../interfaces/roles-map.interface';
 import { DataStorageService } from './../../services/data-storage.service';
 import { Component, Input, SimpleChanges, OnChanges, OnInit } from '@angular/core';
 
@@ -20,17 +21,9 @@ export class RolesTableComponent implements OnInit, OnChanges {
     constructor(private dataService: DataStorageService) {}
 
     ngOnInit(): void {
-        this.rolesTableCheckboxesState = [[]];
-
-        this.filteredTeamMembers.forEach(() => {
-            const a = [];
-
-            this.filteredRoles.forEach(() => {
-                a.push(true);
-            });
-
-            this.rolesTableCheckboxesState.push(a);
-        });
+        this.rolesTableCheckboxesState = this.dataService.rolesMap.map(({ teamMemberRoles }: RolesMapInterface) =>
+            this.roles.map((role: string) => teamMemberRoles.includes(role)),
+        );
     }
 
     ngOnChanges({ teamMembers, roles }: SimpleChanges): void {
@@ -47,6 +40,10 @@ export class RolesTableComponent implements OnInit, OnChanges {
     }
 
     public onCheckBoxChange(i: number, j: number): void {
+        if (!this.rolesTableCheckboxesState[i]) {
+            this.rolesTableCheckboxesState[i] = new Array(this.roles.length).fill(false);
+        }
+
         this.rolesTableCheckboxesState[i][j] = !this.rolesTableCheckboxesState[i][j];
         this.saveStateToService();
     }
@@ -56,9 +53,9 @@ export class RolesTableComponent implements OnInit, OnChanges {
             return;
         }
 
-        const rolesMap = this.teamMembers.map((teamMember: string, memberIndex: number) => {
-            const teamMemberRoles = this.roles.filter(
-                (role: string, roleIndex: number) => this.rolesTableCheckboxesState[memberIndex][roleIndex],
+        const rolesMap = this.filteredTeamMembers.map((teamMember: string, memberIndex: number) => {
+            const teamMemberRoles = this.filteredRoles.filter((role: string, roleIndex: number) =>
+                this.rolesTableCheckboxesState[memberIndex] ? this.rolesTableCheckboxesState[memberIndex][roleIndex] : false,
             );
 
             return {
