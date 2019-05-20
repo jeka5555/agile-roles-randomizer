@@ -1,4 +1,4 @@
-<mat-table [dataSource]="filteredTeamMembers" style="width: 500px;">
+<mat-table [dataSource]="filteredTeamMembers" class="table">
     <ng-container cdkColumnDef="name">
         <mat-header-cell *cdkHeaderCellDef> Имя / роль </mat-header-cell>
         <mat-cell *cdkCellDef="let row"> {{ row }} </mat-cell>

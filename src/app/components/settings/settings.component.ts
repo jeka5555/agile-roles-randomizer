@@ -1,7 +1,5 @@
+import { DataStorageService } from '../../services/data-storage.service';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-
-const defaultRoles = ['Scrum Master', 'Release Manager'];
-const defaultTeamMembers = ['Name 1', 'Name 2', 'Name 3'];
 
 @Component({
     selector: 'app-settings',
@@ -10,10 +8,11 @@ const defaultTeamMembers = ['Name 1', 'Name 2', 'Name 3'];
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsComponent {
-    public roles = defaultRoles;
-    public teamMembers = defaultTeamMembers;
-
+    public roles = this.dataStorageService.roles;
+    public teamMembers = this.dataStorageService.teamMembers;
     public trackByFn = number => number;
+
+    constructor(private dataStorageService: DataStorageService) {}
 
     public addFormControlForRole(): void {
         this.roles = [...this.roles, ''];

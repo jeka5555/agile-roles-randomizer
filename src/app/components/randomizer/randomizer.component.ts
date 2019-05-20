@@ -1,63 +1,6 @@
+import { RolesMapInterface } from '../../interfaces/roles-map.interface';
+import { DataStorageService } from '../../services/data-storage.service';
 import { Component, OnInit } from '@angular/core';
-
-enum Roles {
-    SM = 'Scrum Master',
-    RM = 'Release Manager',
-    SSM = 'Sentry & SD Master',
-}
-
-interface TeamMember {
-    tag: string;
-    availableRoles: Roles[];
-}
-
-interface ChosenRoleInterface {
-    tag: string;
-    roleName: string;
-}
-
-const tcrmfCCTeam: TeamMember[] = [
-    {
-        tag: 'p.dedov',
-        availableRoles: [Roles.SM, Roles.RM, Roles.SSM],
-    },
-    {
-        tag: 'a.senyukov',
-        availableRoles: [Roles.SM, Roles.RM, Roles.SSM],
-    },
-    {
-        tag: 'd.zevalev',
-        availableRoles: [Roles.SM, Roles.RM, Roles.SSM],
-    },
-    {
-        tag: 'e.kalibrov',
-        availableRoles: [Roles.SM, Roles.RM, Roles.SSM],
-    },
-    {
-        tag: 'g.dzesov',
-        availableRoles: [Roles.SM, Roles.RM, Roles.SSM],
-    },
-    {
-        tag: 'd.kondarattsev',
-        availableRoles: [Roles.SM, Roles.RM, Roles.SSM],
-    },
-    {
-        tag: 'a.sultonov',
-        availableRoles: [Roles.SM],
-    },
-    {
-        tag: 'a.ognev',
-        availableRoles: [Roles.SM],
-    },
-    {
-        tag: 'd.prokopuk',
-        availableRoles: [Roles.SM],
-    },
-    {
-        tag: 'n.bachurina',
-        availableRoles: [Roles.SM],
-    },
-];
 
 @Component({
     selector: 'app-randomizer',
@@ -65,67 +8,68 @@ const tcrmfCCTeam: TeamMember[] = [
     styleUrls: ['./randomizer.component.scss'],
 })
 export class RandomizerComponent implements OnInit {
-    public allTeamMembers = tcrmfCCTeam;
-    public roles: string[] = Object.keys(Roles);
-    public takenRoles = {
-        SM: '',
-        RM: '',
-        SSM: '',
-    };
+    public allTeamMembers: string[] = this.dataStorageService.teamMembers;
+    public roles: string[] = this.dataStorageService.roles;
+    public rolesMap: RolesMapInterface[] = this.dataStorageService.rolesMap;
 
-    public checked = {};
-    public chosenRoles: ChosenRoleInterface[] = [];
+    public checked: Record<string, boolean> = {};
+    public chosenRoles: Record<string, string> = {};
+
     public randomizeCount = 0;
     public randomInProgress = false;
 
+    constructor(private dataStorageService: DataStorageService) {}
+
     ngOnInit(): void {
-        tcrmfCCTeam.forEach(teamMember => (this.checked[teamMember.tag] = true));
+        this.allTeamMembers.forEach(teamMember => (this.checked[teamMember] = true));
     }
 
-    public get checkedTeamMembers(): TeamMember[] {
-        return tcrmfCCTeam.filter(teamMember => this.checked[teamMember.tag]);
+    public get checkedTeamMembers(): RolesMapInterface[] {
+        return this.rolesMap.filter(({ teamMember }: RolesMapInterface) => this.checked[teamMember]);
     }
 
-    public getTeamMembersForRole(targetRole: Roles): TeamMember[] {
-        return this.checkedTeamMembers.filter(({ availableRoles }: TeamMember) => !!availableRoles.some((role: Roles) => role === Roles[targetRole]));
+    public getTeamMembersForRole(targetRole: string): string[] {
+        return this.checkedTeamMembers
+            .filter(({ teamMemberRoles }: RolesMapInterface) => teamMemberRoles.some((role: string) => role === targetRole))
+            .map(({ teamMember }: RolesMapInterface) => teamMember);
     }
 
     public randomize(): void {
         this.randomInProgress = true;
 
         setTimeout(() => {
-            const teamForSM = this.checkedTeamMembers
-                .filter(member => member.availableRoles.some(role => role === Roles.SM))
-                .filter(member => !this.wasAlreadySelectedLastWeek(member));
-            const chosenSM = teamForSM[this.getRandomMember(teamForSM.length)].tag;
+            // const teamForSM = this.checkedTeamMembers
+            //     .filter(member => member.availableRoles.some(role => role === Roles.SM))
+            //     .filter(member => !this.wasAlreadySelectedLastWeek(member));
+            // const chosenSM = teamForSM[this.getRandomMember(teamForSM.length)].tag;
 
-            const teamForRM = this.checkedTeamMembers
-                .filter(member => member.availableRoles.some(role => role === Roles.RM))
-                .filter(member => member.tag !== chosenSM)
-                .filter(member => !this.wasAlreadySelectedLastWeek(member));
-            const chosenRM = teamForRM[this.getRandomMember(teamForRM.length)].tag;
+            // const teamForRM = this.checkedTeamMembers
+            //     .filter(member => member.availableRoles.some(role => role === Roles.RM))
+            //     .filter(member => member.tag !== chosenSM)
+            //     .filter(member => !this.wasAlreadySelectedLastWeek(member));
+            // const chosenRM = teamForRM[this.getRandomMember(teamForRM.length)].tag;
 
-            const teamForSSM = this.checkedTeamMembers
-                .filter(member => member.availableRoles.some(role => role === Roles.SSM))
-                .filter(member => member.tag !== chosenSM)
-                .filter(member => member.tag !== chosenRM)
-                .filter(member => !this.wasAlreadySelectedLastWeek(member));
-            const chosenSSM = teamForSSM[this.getRandomMember(teamForSSM.length)].tag;
+            // const teamForSSM = this.checkedTeamMembers
+            //     .filter(member => member.availableRoles.some(role => role === Roles.SSM))
+            //     .filter(member => member.tag !== chosenSM)
+            //     .filter(member => member.tag !== chosenRM)
+            //     .filter(member => !this.wasAlreadySelectedLastWeek(member));
+            // const chosenSSM = teamForSSM[this.getRandomMember(teamForSSM.length)].tag;
 
-            this.chosenRoles = [
-                {
-                    tag: chosenSM,
-                    roleName: 'Scrum Master',
-                },
-                {
-                    tag: chosenRM,
-                    roleName: 'Release Manager',
-                },
-                {
-                    tag: chosenSSM,
-                    roleName: 'Sentry and SD Master',
-                },
-            ];
+            // this.chosenRoles = [
+            //     {
+            //         tag: chosenSM,
+            //         roleName: 'Scrum Master',
+            //     },
+            //     {
+            //         tag: chosenRM,
+            //         roleName: 'Release Manager',
+            //     },
+            //     {
+            //         tag: chosenSSM,
+            //         roleName: 'Sentry and SD Master',
+            //     },
+            // ];
 
             this.randomizeCount++;
 
@@ -142,9 +86,9 @@ export class RandomizerComponent implements OnInit {
         return Math.floor(Math.random() * length);
     }
 
-    private wasAlreadySelectedLastWeek({ tag }: TeamMember): boolean {
-        return Object.keys(this.takenRoles)
-            .map((key: string) => this.takenRoles[key])
-            .includes(tag);
-    }
+    // private wasAlreadySelectedLastWeek(teamMember: string): boolean {
+    //     // return Object.keys(this.takenRoles)
+    //     //     .map((key: string) => this.takenRoles[key])
+    //     //     .includes(tag);
+    // }
 }

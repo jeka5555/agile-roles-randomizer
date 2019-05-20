@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { RandomizerComponent } from './components/randomizer/randomizer.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { RolesTableComponent } from './components/roles-table/roles-table.component';
+import { DataStorageService } from './services/data-storage.service';
 
 @NgModule({
     imports: [
@@ -32,6 +33,7 @@ import { RolesTableComponent } from './components/roles-table/roles-table.compon
         ]),
     ],
     declarations: [AppComponent, RandomizerComponent, SettingsComponent, RolesTableComponent],
+    providers: [DataStorageService],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

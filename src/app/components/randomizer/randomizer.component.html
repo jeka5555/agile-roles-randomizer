@@ -3,8 +3,8 @@
         <mat-card-content>
             <h2 class="card-title">Команда</h2>
             <div *ngFor="let teamMember of allTeamMembers">
-                <mat-checkbox [(ngModel)]="checked[teamMember.tag]" [checked]="true" color="primary">
-                    {{ teamMember.tag }}
+                <mat-checkbox [(ngModel)]="checked[teamMember]" [checked]="true" color="primary">
+                    {{ teamMember }}
                 </mat-checkbox>
             </div>
         </mat-card-content>
@@ -14,39 +14,24 @@
         <mat-card-content class="current-roles">
             <h2 class="card-title">Текущие роли:</h2>
 
-            <mat-form-field>
-                <mat-select [(ngModel)]="takenRoles.SM" placeholder="Scrum Master">
-                    <mat-option *ngFor="let teamMember of getTeamMembersForRole('SM')" [value]="teamMember.tag">
-                        {{ teamMember.tag }}
+            <mat-form-field *ngFor="let role of roles">
+                <mat-select [(ngModel)]="chosenRoles[role]" [placeholder]="role">
+                    <mat-option *ngFor="let teamMember of getTeamMembersForRole(role)" [value]="teamMember">
+                        {{ teamMember }}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
 
-            <mat-form-field>
-                <mat-select [(ngModel)]="takenRoles.RM" placeholder="Release Manager">
-                    <mat-option *ngFor="let teamMember of getTeamMembersForRole('RM')" [value]="teamMember.tag">
-                        {{ teamMember.tag }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-select [(ngModel)]="takenRoles.SSM" placeholder="Sentry And SD Master">
-                    <mat-option *ngFor="let teamMember of getTeamMembersForRole('SSM')" [value]="teamMember.tag">
-                        {{ teamMember.tag }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
         </mat-card-content>
     </mat-card>
 
     <mat-card>
         <mat-card-content>
             <h2 class="card-title">Выбранные роли:</h2>
-            <ng-container *ngFor="let chosenRole of chosenRoles">
+            <ng-container *ngFor="let role of roles">
                 <div class="chosen-role">
-                    <div class="role-name"><b>{{ chosenRole.roleName }}:</b></div>
-                    <div>{{ chosenRole.tag }}</div>
+                    <div class="role-name"><b>{{ role }}:</b></div>
+                    <div>{{ role }}</div>
                 </div>
             </ng-container>
         </mat-card-content>

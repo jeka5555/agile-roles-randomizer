@@ -1,3 +1,4 @@
+import { DataStorageService } from './../../services/data-storage.service';
 import { Component, Input, SimpleChanges, OnChanges, OnInit } from '@angular/core';
 
 @Component({
@@ -16,27 +17,29 @@ export class RolesTableComponent implements OnInit, OnChanges {
     public columns: string[];
     public rolesTableCheckboxesState: boolean[][];
 
+    constructor(private dataService: DataStorageService) {}
+
     ngOnInit(): void {
         this.rolesTableCheckboxesState = [[]];
 
-        for (let i = 0; i < this.filteredTeamMembers.length; i++) {
+        this.filteredTeamMembers.forEach(() => {
             const a = [];
 
-            for (let j = 0; j < this.filteredRoles.length; j++) {
-                a.push(false);
-            }
+            this.filteredRoles.forEach(() => {
+                a.push(true);
+            });
 
             this.rolesTableCheckboxesState.push(a);
-        }
+        });
     }
 
     ngOnChanges({ teamMembers, roles }: SimpleChanges): void {
-        if (teamMembers) {
+        if (teamMembers && teamMembers.currentValue) {
             this.filteredTeamMembers = teamMembers.currentValue.filter(member => !!member);
             this.saveStateToService();
         }
 
-        if (roles) {
+        if (roles && roles.currentValue) {
             this.filteredRoles = roles.currentValue.filter(role => !!role);
             this.columns = ['name', ...this.filteredRoles];
             this.saveStateToService();
@@ -48,5 +51,24 @@ export class RolesTableComponent implements OnInit, OnChanges {
         this.saveStateToService();
     }
 
-    private saveStateToService(): void {}
+    private saveStateToService(): void {
+        if (!this.filteredTeamMembers || !this.filteredRoles || !this.rolesTableCheckboxesState) {
+            return;
+        }
+
+        const rolesMap = this.teamMembers.map((teamMember: string, memberIndex: number) => {
+            const teamMemberRoles = this.roles.filter(
+                (role: string, roleIndex: number) => this.rolesTableCheckboxesState[memberIndex][roleIndex],
+            );
+
+            return {
+                teamMember,
+                teamMemberRoles,
+            };
+        });
+
+        this.dataService.rolesMap = rolesMap;
+        this.dataService.roles = this.filteredRoles;
+        this.dataService.teamMembers = this.filteredTeamMembers;
+    }
 }
