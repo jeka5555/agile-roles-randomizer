@@ -2,7 +2,7 @@ import { ChosenRoleInterface } from '../../interfaces/chosen-role.interface';
 import { RolesMapInterface } from '../../interfaces/roles-map.interface';
 import { DataStorageService } from '../../services/data-storage.service';
 import { Component, OnInit } from '@angular/core';
-import { MatSelectChange } from '@angular/material';
+import { MatSelectChange, MatSnackBar } from '@angular/material';
 
 const RANDOMIZE_ITERATIONS_COUNT = 50;
 const RANDOMIZE_MILLISECONDS_COUNT = 2;
@@ -24,7 +24,7 @@ export class RandomizerComponent implements OnInit {
     public randomizeCount = 0;
     public randomInProgress = false;
 
-    constructor(private dataStorageService: DataStorageService) {}
+    constructor(private dataStorageService: DataStorageService, private snackBar: MatSnackBar) {}
 
     ngOnInit(): void {
         this.allTeamMembers.forEach(teamMember => (this.checked[teamMember] = true));
@@ -50,17 +50,21 @@ export class RandomizerComponent implements OnInit {
         setTimeout(() => {
             this.chosenRoles = [];
             this.roles.forEach((role: string) => {
-                this.chosenRoles.push({
-                    role,
-                    teamMember: this.getRandomMember(
-                        this.getTeamMembersForRole(role)
-                            .filter(
-                                (teamMember: string) =>
-                                    !this.chosenRoles.some((chosenRole: ChosenRoleInterface) => chosenRole.teamMember === teamMember),
-                            )
-                            .filter((teamMember: string) => !this.wasAlreadySelectedLastIteration(teamMember)),
-                    ),
-                });
+                const chosenTeamMember = this.getRandomMember(
+                    this.getTeamMembersForRole(role)
+                        .filter(
+                            (teamMember: string) =>
+                                !this.chosenRoles.some((chosenRole: ChosenRoleInterface) => chosenRole.teamMember === teamMember),
+                        )
+                        .filter((teamMember: string) => !this.wasAlreadySelectedLastIteration(teamMember)),
+                );
+
+                if (chosenTeamMember) {
+                    this.chosenRoles.push({
+                        role,
+                        teamMember: chosenTeamMember,
+                    });
+                }
             });
 
             this.randomizeCount++;
@@ -70,6 +74,10 @@ export class RandomizerComponent implements OnInit {
             } else {
                 this.randomizeCount = 0;
                 this.randomInProgress = false;
+
+                if (this.chosenRoles.length !== this.roles.length) {
+                    this.snackBar.open('Невозможно выбрать все роли', 'Недостаточно участников', { duration: 4000 });
+                }
             }
         }, RANDOMIZE_MILLISECONDS_COUNT * this.randomizeCount);
     }

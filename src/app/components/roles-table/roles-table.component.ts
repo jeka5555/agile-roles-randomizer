@@ -1,6 +1,7 @@
 import { RolesMapInterface } from '../../interfaces/roles-map.interface';
 import { DataStorageService } from './../../services/data-storage.service';
 import { Component, Input, SimpleChanges, OnChanges, OnInit } from '@angular/core';
+import { uniq } from 'lodash';
 
 @Component({
     selector: 'app-roles-table',
@@ -28,12 +29,12 @@ export class RolesTableComponent implements OnInit, OnChanges {
 
     ngOnChanges({ teamMembers, roles }: SimpleChanges): void {
         if (teamMembers && teamMembers.currentValue) {
-            this.filteredTeamMembers = teamMembers.currentValue.filter(member => !!member);
+            this.filteredTeamMembers = uniq(teamMembers.currentValue.filter(member => !!member));
             this.saveStateToService();
         }
 
         if (roles && roles.currentValue) {
-            this.filteredRoles = roles.currentValue.filter(role => !!role);
+            this.filteredRoles = uniq(roles.currentValue.filter(role => !!role));
             this.columns = ['name', ...this.filteredRoles];
             this.saveStateToService();
         }
