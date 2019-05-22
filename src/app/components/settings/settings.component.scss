@@ -57,4 +57,25 @@ mat-card-content {
 .row-container {
   display: flex; 
   justify-content: center;
+  width: 1320px; 
+  align-self: center;
+}
+
+mat-card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+mat-radio-group {
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+}
+
+mat-radio-button {
+  margin: 2px 0;
+}
+
+.grow {
+  flex-grow: 1;
 }

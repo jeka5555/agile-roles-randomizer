@@ -1,3 +1,4 @@
+import { RandomizerModes } from '../enums/randomizer-modes.enum';
 import { RolesMapInterface } from '../interfaces/roles-map.interface';
 import { Injectable } from '@angular/core';
 
@@ -17,12 +18,16 @@ const defaultRolesMap: RolesMapInterface[] = [
         teamMemberRoles: ['Scrum Master', 'Release Manager'],
     },
 ];
+const defaultRandomizerMode = RandomizerModes.NEW_MEMBERS_FOR_ITERATION;
+const defaultInstantChoice = false;
 
 @Injectable()
 export class DataStorageService {
     private _rolesMap: RolesMapInterface[];
     private _teamMembers: string[];
     private _roles: string[];
+    private _randomizerMode: RandomizerModes;
+    private _instantChoice: boolean;
 
     public get rolesMap(): RolesMapInterface[] {
         return this._rolesMap || defaultRolesMap;
@@ -46,5 +51,21 @@ export class DataStorageService {
 
     public set roles(roles: string[]) {
         this._roles = roles;
+    }
+
+    public get randomizerMode(): RandomizerModes {
+        return this._randomizerMode || defaultRandomizerMode;
+    }
+
+    public set randomizerMode(randomizerMode: RandomizerModes) {
+        this._randomizerMode = randomizerMode;
+    }
+
+    public get instantChoice(): boolean {
+        return this._instantChoice || defaultInstantChoice;
+    }
+
+    public set instantChoice(instantChoice: boolean) {
+        this._instantChoice = instantChoice;
     }
 }
