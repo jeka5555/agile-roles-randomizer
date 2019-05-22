@@ -1,3 +1,4 @@
+import { RandomizerModes } from '../../enums/randomizer-modes.enum';
 import { ChosenRoleInterface } from '../../interfaces/chosen-role.interface';
 import { RolesMapInterface } from '../../interfaces/roles-map.interface';
 import { DataStorageService } from '../../services/data-storage.service';
@@ -16,6 +17,8 @@ export class RandomizerComponent implements OnInit {
     public allTeamMembers: string[] = this.dataStorageService.teamMembers;
     public roles: string[] = this.dataStorageService.roles;
     public rolesMap: RolesMapInterface[] = this.dataStorageService.rolesMap;
+    public randomizerMode = this.dataStorageService.randomizerMode;
+    public instantChoice = this.dataStorageService.instantChoice;
 
     public checked: Record<string, boolean> = {};
     public lastIterationRoles: Record<string, string> = {};
@@ -50,14 +53,10 @@ export class RandomizerComponent implements OnInit {
         setTimeout(() => {
             this.chosenRoles = [];
             this.roles.forEach((role: string) => {
-                const chosenTeamMember = this.getRandomMember(
-                    this.getTeamMembersForRole(role)
-                        .filter(
-                            (teamMember: string) =>
-                                !this.chosenRoles.some((chosenRole: ChosenRoleInterface) => chosenRole.teamMember === teamMember),
-                        )
-                        .filter((teamMember: string) => !this.wasAlreadySelectedLastIteration(teamMember)),
-                );
+                const teamMembersForRole = this.getTeamMembersForRole(role);
+                const notChosenTeamMembers = this.filterByNotChosen(teamMembersForRole);
+                const membersFilteredByRandomizerMode = this.filterByRandomizerMode(role, notChosenTeamMembers, this.randomizerMode);
+                const chosenTeamMember = this.getRandomMember(membersFilteredByRandomizerMode);
 
                 if (chosenTeamMember) {
                     this.chosenRoles.push({
@@ -69,7 +68,7 @@ export class RandomizerComponent implements OnInit {
 
             this.randomizeCount++;
 
-            if (this.randomizeCount < RANDOMIZE_ITERATIONS_COUNT) {
+            if (!this.instantChoice && this.randomizeCount < RANDOMIZE_ITERATIONS_COUNT) {
                 this.randomize();
             } else {
                 this.randomizeCount = 0;
@@ -82,8 +81,25 @@ export class RandomizerComponent implements OnInit {
         }, RANDOMIZE_MILLISECONDS_COUNT * this.randomizeCount);
     }
 
-    public getRandomMember<T>(teamMembers: T[]): T {
+    private getRandomMember<T>(teamMembers: T[]): T {
         return teamMembers[Math.floor(Math.random() * teamMembers.length)];
+    }
+
+    private filterByRandomizerMode(role: string, teamMembers: string[], randomizerMode: RandomizerModes): string[] {
+        switch (randomizerMode) {
+            case RandomizerModes.NEW_MEMBERS_FOR_ITERATION:
+                return teamMembers.filter((teamMember: string) => !this.wasAlreadySelectedLastIteration(teamMember));
+            case RandomizerModes.NEW_MEMBERS_FOR_ROLE:
+                return teamMembers.filter((teamMember: string) => this.lastIterationRoles[role] !== teamMember);
+            default:
+                return teamMembers;
+        }
+    }
+
+    private filterByNotChosen(teamMembers: string[]): string[] {
+        return teamMembers.filter(
+            (teamMember: string) => !this.chosenRoles.some((chosenRole: ChosenRoleInterface) => chosenRole.teamMember === teamMember),
+        );
     }
 
     private wasAlreadySelectedLastIteration(teamMember: string): boolean {

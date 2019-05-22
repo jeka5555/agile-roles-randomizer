@@ -20,7 +20,7 @@
         <mat-card class="grow">
             <mat-card-content>
                 <h2 class="card-title">Мгновенный выбор:</h2> 
-                <mat-radio-group [(ngModel)]="instantChoice">
+                <mat-radio-group [(ngModel)]="instantChoice" (change)="saveStateToService()">
                     <mat-radio-button color="primary" [value]="true">Включен</mat-radio-button>
                     <mat-radio-button color="primary" [value]="false">Выключен</mat-radio-button>
                 </mat-radio-group>
