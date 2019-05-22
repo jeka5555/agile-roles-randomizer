@@ -1,3 +1,4 @@
+import { RandomizerModes } from '../../enums/randomizer-modes.enum';
 import { DataStorageService } from '../../services/data-storage.service';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
@@ -10,9 +11,13 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 export class SettingsComponent {
     public roles = this.dataStorageService.roles;
     public teamMembers = this.dataStorageService.teamMembers;
-    public trackByFn = number => number;
+    public randomizerMode = this.dataStorageService.randomizerMode;
+    public instantChoice = this.dataStorageService.instantChoice;
+    public randomizerModes = RandomizerModes;
 
     constructor(private dataStorageService: DataStorageService) {}
+
+    public trackByFn = number => number;
 
     public addFormControlForRole(): void {
         this.roles = [...this.roles, ''];
@@ -43,5 +48,10 @@ export class SettingsComponent {
             ...this.teamMembers.slice(0, teamMemberIndex),
             ...this.teamMembers.slice(teamMemberIndex + 1, this.teamMembers.length),
         ];
+    }
+
+    public saveStateToService(): void {
+        this.dataStorageService.randomizerMode = this.randomizerMode;
+        this.dataStorageService.instantChoice = this.instantChoice;
     }
 }
