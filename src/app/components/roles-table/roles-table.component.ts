@@ -68,5 +68,6 @@ export class RolesTableComponent implements OnInit, OnChanges {
         this.dataService.rolesMap = rolesMap;
         this.dataService.roles = this.filteredRoles;
         this.dataService.teamMembers = this.filteredTeamMembers;
+        this.dataService.updateState();
     }
 }

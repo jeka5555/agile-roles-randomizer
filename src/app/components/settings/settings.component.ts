@@ -1,6 +1,9 @@
 import { RandomizerModes } from '../../enums/randomizer-modes.enum';
 import { DataStorageService } from '../../services/data-storage.service';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
+import { Observable } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
 
 @Component({
     selector: 'app-settings',
@@ -8,14 +11,24 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
     styleUrls: ['./settings.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsComponent {
+export class SettingsComponent implements OnInit {
     public roles = this.dataStorageService.roles;
     public teamMembers = this.dataStorageService.teamMembers;
     public randomizerMode = this.dataStorageService.randomizerMode;
     public instantChoice = this.dataStorageService.instantChoice;
     public randomizerModes = RandomizerModes;
+    public copyLink$: Observable<string>;
 
-    constructor(private dataStorageService: DataStorageService) {}
+    constructor(private dataStorageService: DataStorageService, private snackBar: MatSnackBar) {}
+
+    ngOnInit(): void {
+        this.copyLink$ = this.dataStorageService.getState$().pipe(
+            filter(state => !!state),
+            map((state: string) => `${window.location.href.replace('settings', '')}?data=${state}`),
+        );
+
+        this.dataStorageService.updateState();
+    }
 
     public trackByFn = number => number;
 
@@ -53,5 +66,10 @@ export class SettingsComponent {
     public saveStateToService(): void {
         this.dataStorageService.randomizerMode = this.randomizerMode;
         this.dataStorageService.instantChoice = this.instantChoice;
+        this.dataStorageService.updateState();
+    }
+
+    public copyLinkToClipboard(): void {
+        this.snackBar.open('Ссылка скопирована в буфер обмена', '', { duration: 1000 });
     }
 }
