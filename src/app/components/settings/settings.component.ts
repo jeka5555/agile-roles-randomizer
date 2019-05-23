@@ -1,9 +1,9 @@
 import { RandomizerModes } from '../../enums/randomizer-modes.enum';
 import { DataStorageService } from '../../services/data-storage.service';
-import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { map, filter, takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-settings',
@@ -11,23 +11,37 @@ import { map, filter } from 'rxjs/operators';
     styleUrls: ['./settings.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
     public roles = this.dataStorageService.roles;
     public teamMembers = this.dataStorageService.teamMembers;
     public randomizerMode = this.dataStorageService.randomizerMode;
     public instantChoice = this.dataStorageService.instantChoice;
     public randomizerModes = RandomizerModes;
-    public copyLink$: Observable<string>;
+    public copyLink: string;
 
-    constructor(private dataStorageService: DataStorageService, private snackBar: MatSnackBar) {}
+    private onDestroy$ = new Subject<void>();
+
+    constructor(private dataStorageService: DataStorageService, private snackBar: MatSnackBar, private cd: ChangeDetectorRef) {}
 
     ngOnInit(): void {
-        this.copyLink$ = this.dataStorageService.getState$().pipe(
-            filter(state => !!state),
-            map((state: string) => `${window.location.href.replace('settings', '')}?data=${state}`),
-        );
+        this.dataStorageService
+            .getState$()
+            .pipe(
+                filter(state => !!state),
+                map((state: string) => `${window.location.href.replace('settings', '')}?data=${state}`),
+                takeUntil(this.onDestroy$),
+            )
+            .subscribe((link: string) => {
+                this.copyLink = link;
+                this.cd.detectChanges();
+            });
 
         this.dataStorageService.updateState();
+    }
+
+    ngOnDestroy(): void {
+        this.onDestroy$.next();
+        this.onDestroy$.complete();
     }
 
     public trackByFn = number => number;

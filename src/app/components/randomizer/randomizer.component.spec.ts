@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataStorageService } from '../../services/data-storage.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('RandomizerComponent', () => {
     let component: RandomizerComponent;
@@ -12,7 +13,7 @@ describe('RandomizerComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [AppMaterialModule, CommonModule, FormsModule, BrowserAnimationsModule],
+            imports: [AppMaterialModule, CommonModule, FormsModule, BrowserAnimationsModule, RouterTestingModule],
             declarations: [RandomizerComponent],
             providers: [DataStorageService],
         }).compileComponents();

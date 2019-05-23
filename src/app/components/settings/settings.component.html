@@ -30,9 +30,9 @@
         <mat-card class="grow">
             <mat-card-content>
                 <h2 class="card-title">Ссылка для копирования:</h2> 
-                <input class="item-input copy-link" [value]="copyLink$ | async" disabled />
+                <input class="item-input copy-link" [value]="copyLink" disabled />
                 <button 
-                    [cbContent]="copyLink$ | async" 
+                    [cbContent]="copyLink" 
                     (click)="copyLinkToClipboard()" 
                     ngxClipboard 
                     mat-flat-button 
