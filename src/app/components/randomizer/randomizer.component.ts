@@ -4,6 +4,8 @@ import { RolesMapInterface } from '../../interfaces/roles-map.interface';
 import { DataStorageService } from '../../services/data-storage.service';
 import { Component, OnInit } from '@angular/core';
 import { MatSelectChange, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Params } from '@angular/router';
+import { take } from 'rxjs/operators';
 
 const RANDOMIZE_ITERATIONS_COUNT = 50;
 const RANDOMIZE_MILLISECONDS_COUNT = 2;
@@ -14,11 +16,11 @@ const RANDOMIZE_MILLISECONDS_COUNT = 2;
     styleUrls: ['./randomizer.component.scss'],
 })
 export class RandomizerComponent implements OnInit {
-    public allTeamMembers: string[] = this.dataStorageService.teamMembers;
-    public roles: string[] = this.dataStorageService.roles;
-    public rolesMap: RolesMapInterface[] = this.dataStorageService.rolesMap;
-    public randomizerMode = this.dataStorageService.randomizerMode;
-    public instantChoice = this.dataStorageService.instantChoice;
+    public allTeamMembers: string[];
+    public roles: string[];
+    public rolesMap: RolesMapInterface[];
+    public randomizerMode: RandomizerModes;
+    public instantChoice: boolean;
 
     public checked: Record<string, boolean> = {};
     public lastIterationRoles: Record<string, string> = {};
@@ -27,10 +29,28 @@ export class RandomizerComponent implements OnInit {
     public randomizeCount = 0;
     public randomInProgress = false;
 
-    constructor(private dataStorageService: DataStorageService, private snackBar: MatSnackBar) {}
+    constructor(private dataStorageService: DataStorageService, private snackBar: MatSnackBar, private route: ActivatedRoute) {}
 
     ngOnInit(): void {
-        this.allTeamMembers.forEach(teamMember => (this.checked[teamMember] = true));
+        this.route.queryParams.pipe(take(1)).subscribe(({ data }: Params) => {
+            if (data) {
+                try {
+                    const serviceData = JSON.parse(data);
+
+                    this.dataStorageService.restoreState(serviceData);
+                } catch {
+                    throw new Error('Cannot parse data JSON - invalid format');
+                }
+            }
+
+            this.allTeamMembers = this.dataStorageService.teamMembers;
+            this.roles = this.dataStorageService.roles;
+            this.rolesMap = this.dataStorageService.rolesMap;
+            this.randomizerMode = this.dataStorageService.randomizerMode;
+            this.instantChoice = this.dataStorageService.instantChoice;
+
+            this.allTeamMembers.forEach(teamMember => (this.checked[teamMember] = true));
+        });
     }
 
     public get checkedTeamMembers(): RolesMapInterface[] {

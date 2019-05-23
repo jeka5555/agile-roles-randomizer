@@ -12,6 +12,7 @@ import { RandomizerComponent } from './components/randomizer/randomizer.componen
 import { SettingsComponent } from './components/settings/settings.component';
 import { RolesTableComponent } from './components/roles-table/roles-table.component';
 import { DataStorageService } from './services/data-storage.service';
+import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
     imports: [
@@ -21,6 +22,7 @@ import { DataStorageService } from './services/data-storage.service';
         AppMaterialModule,
         CdkTableModule,
         BrowserAnimationsModule,
+        ClipboardModule,
         RouterModule.forRoot([
             {
                 path: '',

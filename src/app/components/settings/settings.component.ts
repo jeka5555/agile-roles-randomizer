@@ -1,6 +1,7 @@
 import { RandomizerModes } from '../../enums/randomizer-modes.enum';
 import { DataStorageService } from '../../services/data-storage.service';
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
     selector: 'app-settings',
@@ -8,14 +9,19 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
     styleUrls: ['./settings.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsComponent {
+export class SettingsComponent implements OnInit {
     public roles = this.dataStorageService.roles;
     public teamMembers = this.dataStorageService.teamMembers;
     public randomizerMode = this.dataStorageService.randomizerMode;
     public instantChoice = this.dataStorageService.instantChoice;
     public randomizerModes = RandomizerModes;
+    public copyLink: string;
 
-    constructor(private dataStorageService: DataStorageService) {}
+    constructor(private dataStorageService: DataStorageService, private snackBar: MatSnackBar) {}
+
+    ngOnInit(): void {
+        this.updateCopyLinkFromServiceData();
+    }
 
     public trackByFn = number => number;
 
@@ -53,5 +59,23 @@ export class SettingsComponent {
     public saveStateToService(): void {
         this.dataStorageService.randomizerMode = this.randomizerMode;
         this.dataStorageService.instantChoice = this.instantChoice;
+    }
+
+    public copyLinkToClipboard(): void {
+        this.snackBar.open('Ссылка скопирована в буфер обмена', '', { duration: 1000 });
+    }
+
+    private updateCopyLinkFromServiceData(): void {
+        this.copyLink = `${window.location.href.replace('settings', '')}?data=${this.getServiceData()}`;
+    }
+
+    private getServiceData(): string {
+        return JSON.stringify({
+            roles: this.dataStorageService.roles,
+            rolesMap: this.dataStorageService.rolesMap,
+            instantChoice: this.dataStorageService.instantChoice,
+            randomizerMode: this.dataStorageService.randomizerMode,
+            teamMembers: this.dataStorageService.teamMembers,
+        });
     }
 }

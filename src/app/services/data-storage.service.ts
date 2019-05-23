@@ -1,3 +1,4 @@
+import { DataStorageInterface } from '../interfaces/data-storage.interface';
 import { RandomizerModes } from '../enums/randomizer-modes.enum';
 import { RolesMapInterface } from '../interfaces/roles-map.interface';
 import { Injectable } from '@angular/core';
@@ -67,5 +68,13 @@ export class DataStorageService {
 
     public set instantChoice(instantChoice: boolean) {
         this._instantChoice = instantChoice;
+    }
+
+    public restoreState(serviceData: DataStorageInterface): void {
+        this._teamMembers = serviceData.teamMembers;
+        this._roles = serviceData.roles;
+        this._rolesMap = serviceData.rolesMap;
+        this._randomizerMode = serviceData.randomizerMode;
+        this._instantChoice = serviceData.instantChoice;
     }
 }

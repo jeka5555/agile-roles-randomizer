@@ -30,7 +30,17 @@
         <mat-card class="grow">
             <mat-card-content>
                 <h2 class="card-title">Ссылка для копирования:</h2> 
-                <textarea></textarea>
+                <input class="item-input copy-link" [(ngModel)]="copyLink" />
+                <button 
+                    [cbContent]="copyLink" 
+                    (click)="copyLinkToClipboard()" 
+                    ngxClipboard 
+                    mat-flat-button 
+                    color="primary" 
+                    class="copy-link-button">
+                    
+                    Скопировать
+                </button>
             </mat-card-content>
         </mat-card>
     </div>
