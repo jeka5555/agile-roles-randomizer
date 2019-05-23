@@ -24,7 +24,7 @@ export class RandomizerComponent implements OnInit {
 
     public checked: Record<string, boolean> = {};
     public lastIterationRoles: Record<string, string> = {};
-    public chosenRoles: ChosenRoleInterface[];
+    public chosenRoles: ChosenRoleInterface[] = [];
 
     public randomizeCount = 0;
     public randomInProgress = false;
@@ -71,20 +71,14 @@ export class RandomizerComponent implements OnInit {
         this.randomInProgress = true;
 
         setTimeout(() => {
-            this.chosenRoles = [];
-            this.roles.forEach((role: string) => {
-                const teamMembersForRole = this.getTeamMembersForRole(role);
-                const notChosenTeamMembers = this.filterByNotChosen(teamMembersForRole);
-                const membersFilteredByRandomizerMode = this.filterByRandomizerMode(role, notChosenTeamMembers, this.randomizerMode);
-                const chosenTeamMember = this.getRandomMember(membersFilteredByRandomizerMode);
+            const unsortedChosenRoles = this.getChosenRoles([]);
 
-                if (chosenTeamMember) {
-                    this.chosenRoles.push({
-                        role,
-                        teamMember: chosenTeamMember,
-                    });
-                }
-            });
+            this.chosenRoles =
+                unsortedChosenRoles.length === this.roles.length
+                    ? this.roles.map((role: string) =>
+                          unsortedChosenRoles.find((chosenRoles: ChosenRoleInterface) => chosenRoles.role === role),
+                      )
+                    : [];
 
             this.randomizeCount++;
 
@@ -94,11 +88,42 @@ export class RandomizerComponent implements OnInit {
                 this.randomizeCount = 0;
                 this.randomInProgress = false;
 
-                if (this.chosenRoles.length !== this.roles.length) {
+                if (unsortedChosenRoles.length !== this.roles.length) {
                     this.snackBar.open('Невозможно выбрать все роли', 'Недостаточно участников', { duration: 4000 });
                 }
             }
         }, RANDOMIZE_MILLISECONDS_COUNT * this.randomizeCount);
+    }
+
+    private roleComparator(role1: string, role2: string): number {
+        return this.getTeamMembersForRole(role1).length - this.getTeamMembersForRole(role2).length;
+    }
+
+    private getChosenRoles(alreadyChosenRoles: ChosenRoleInterface[]): ChosenRoleInterface[] {
+        const remainingRoles = this.roles
+            .filter((role: string) => !alreadyChosenRoles.some((chosenRole: ChosenRoleInterface) => chosenRole.role === role))
+            .sort(this.roleComparator.bind(this));
+
+        if (!remainingRoles.length) {
+            return alreadyChosenRoles;
+        }
+
+        const firstRole = remainingRoles[0];
+        const teamMembersForRole = this.getTeamMembersForRole(firstRole);
+        const notChosenTeamMembers = this.filterByNotChosen(teamMembersForRole, alreadyChosenRoles);
+        const membersFilteredByRandomizerMode = this.filterByRandomizerMode(firstRole, notChosenTeamMembers, this.randomizerMode);
+        const chosenTeamMember = this.getRandomMember(membersFilteredByRandomizerMode);
+
+        if (chosenTeamMember) {
+            alreadyChosenRoles.push({
+                role: firstRole,
+                teamMember: chosenTeamMember,
+            });
+        } else {
+            return alreadyChosenRoles;
+        }
+
+        return this.getChosenRoles(alreadyChosenRoles);
     }
 
     private getRandomMember<T>(teamMembers: T[]): T {
@@ -116,9 +141,9 @@ export class RandomizerComponent implements OnInit {
         }
     }
 
-    private filterByNotChosen(teamMembers: string[]): string[] {
+    private filterByNotChosen(teamMembers: string[], chosenMembers: ChosenRoleInterface[]): string[] {
         return teamMembers.filter(
-            (teamMember: string) => !this.chosenRoles.some((chosenRole: ChosenRoleInterface) => chosenRole.teamMember === teamMember),
+            (teamMember: string) => !chosenMembers.some((chosenRole: ChosenRoleInterface) => chosenRole.teamMember === teamMember),
         );
     }
 
