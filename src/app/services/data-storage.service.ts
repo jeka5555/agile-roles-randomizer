@@ -2,6 +2,8 @@ import { DataStorageInterface } from '../interfaces/data-storage.interface';
 import { RandomizerModes } from '../enums/randomizer-modes.enum';
 import { RolesMapInterface } from '../interfaces/roles-map.interface';
 import { Injectable } from '@angular/core';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 const defaultRoles: string[] = ['Scrum Master', 'Release Manager'];
 const defaultTeamMembers: string[] = ['Name 1', 'Name 2', 'Name 3'];
@@ -29,6 +31,7 @@ export class DataStorageService {
     private _roles: string[];
     private _randomizerMode: RandomizerModes;
     private _instantChoice: boolean;
+    private _state = new BehaviorSubject<DataStorageInterface>(null);
 
     public get rolesMap(): RolesMapInterface[] {
         return this._rolesMap || defaultRolesMap;
@@ -70,11 +73,27 @@ export class DataStorageService {
         this._instantChoice = instantChoice;
     }
 
+    public getState$(): Observable<string> {
+        return this._state.pipe(map((state: DataStorageInterface) => JSON.stringify(state)));
+    }
+
     public restoreState(serviceData: DataStorageInterface): void {
         this._teamMembers = serviceData.teamMembers;
         this._roles = serviceData.roles;
         this._rolesMap = serviceData.rolesMap;
         this._randomizerMode = serviceData.randomizerMode;
         this._instantChoice = serviceData.instantChoice;
+
+        this.updateState();
+    }
+
+    public updateState(): void {
+        this._state.next({
+            teamMembers: this.teamMembers,
+            roles: this.roles,
+            rolesMap: this.rolesMap,
+            randomizerMode: this.randomizerMode,
+            instantChoice: this.instantChoice,
+        });
     }
 }
