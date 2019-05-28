@@ -22,6 +22,8 @@ export class RandomizerComponent implements OnInit {
     public rolesMap: RolesMapInterface[];
     public randomizerMode: RandomizerModes;
     public instantChoice: boolean;
+    public slackToken: string;
+    public slackChannel: string;
 
     public checked: Record<string, boolean> = {};
     public lastIterationRoles: Record<string, string> = {};
@@ -49,6 +51,8 @@ export class RandomizerComponent implements OnInit {
             this.rolesMap = this.dataStorageService.rolesMap;
             this.randomizerMode = this.dataStorageService.randomizerMode;
             this.instantChoice = this.dataStorageService.instantChoice;
+            this.slackToken = this.dataStorageService.slackToken;
+            this.slackChannel = this.dataStorageService.slackChannel;
 
             this.allTeamMembers.forEach(teamMember => (this.checked[teamMember] = true));
         });
