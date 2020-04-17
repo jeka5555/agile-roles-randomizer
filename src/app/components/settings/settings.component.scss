@@ -15,6 +15,10 @@ mat-card {
   padding: 50px;
 }
 
+.toggle {
+  margin-bottom: 5px;
+}
+
 mat-card-content {
   height: 100%;
 }
@@ -90,4 +94,8 @@ mat-radio-button {
   align-self: center;
   margin-top: 12px;
   height: 36px;
+}
+
+.full-width {
+  width: 100%;
 }

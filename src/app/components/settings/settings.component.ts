@@ -1,7 +1,7 @@
 import { RandomizerModes } from '../../enums/randomizer-modes.enum';
-import { DataStorageService } from '../../services/data-storage.service';
+import { DataStorageService } from '../../services/data-storage/data-storage.service';
 import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatSlideToggleChange } from '@angular/material';
 import { Subject } from 'rxjs';
 import { map, filter, takeUntil } from 'rxjs/operators';
 
@@ -16,6 +16,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
     public teamMembers = this.dataStorageService.teamMembers;
     public randomizerMode = this.dataStorageService.randomizerMode;
     public instantChoice = this.dataStorageService.instantChoice;
+    public slackToken = this.dataStorageService.slackToken;
+    public slackChannel = this.dataStorageService.slackChannel;
+    public isPrivateChannel = this.dataStorageService.isPrivateChannel;
     public randomizerModes = RandomizerModes;
     public copyLink: string;
 
@@ -85,5 +88,17 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     public copyLinkToClipboard(): void {
         this.snackBar.open('Ссылка скопирована в буфер обмена', '', { duration: 1000 });
+    }
+
+    public onSlackTokenValueChange(event: Event): void {
+        this.dataStorageService.slackToken = (event.target as HTMLInputElement).value;
+    }
+
+    public onSlackChannelValueChange(event: Event): void {
+        this.dataStorageService.slackChannel = (event.target as HTMLInputElement).value;
+    }
+
+    public toogleChannelType(event: MatSlideToggleChange): void {
+        this.dataStorageService.isPrivateChannel = event.checked;
     }
 }

@@ -1,9 +1,11 @@
-import { DataStorageInterface } from '../interfaces/data-storage.interface';
-import { RandomizerModes } from '../enums/randomizer-modes.enum';
-import { RolesMapInterface } from '../interfaces/roles-map.interface';
+import { MinimizedDataStorageInterface } from '../../interfaces/minimized-data-storage.interface';
+import { DataStorageInterface } from '../../interfaces/data-storage.interface';
+import { RandomizerModes } from '../../enums/randomizer-modes.enum';
+import { RolesMapInterface } from '../../interfaces/roles-map.interface';
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { compressSettings, decompressSettings } from '../../helpers/data-compression.helper';
 
 const defaultRoles: string[] = ['Scrum Master', 'Release Manager'];
 const defaultTeamMembers: string[] = ['Name 1', 'Name 2', 'Name 3'];
@@ -23,6 +25,8 @@ const defaultRolesMap: RolesMapInterface[] = [
 ];
 const defaultRandomizerMode = RandomizerModes.NEW_MEMBERS_FOR_ITERATION;
 const defaultInstantChoice = false;
+const defaultSlackToken = '';
+const defaultSlackChannel = '';
 
 @Injectable()
 export class DataStorageService {
@@ -31,7 +35,18 @@ export class DataStorageService {
     private _roles: string[];
     private _randomizerMode: RandomizerModes;
     private _instantChoice: boolean;
-    private _state = new BehaviorSubject<DataStorageInterface>(null);
+    private _slackToken: string;
+    private _slackChannel: string;
+    private _isPrivateChannel = false;
+    private _state = new ReplaySubject<DataStorageInterface>(1);
+
+    public get isPrivateChannel(): boolean {
+        return this._isPrivateChannel;
+    }
+
+    public set isPrivateChannel(isPrivate: boolean) {
+        this._isPrivateChannel = isPrivate;
+    }
 
     public get rolesMap(): RolesMapInterface[] {
         return this._rolesMap || defaultRolesMap;
@@ -73,16 +88,37 @@ export class DataStorageService {
         this._instantChoice = instantChoice;
     }
 
-    public getState$(): Observable<string> {
-        return this._state.pipe(map((state: DataStorageInterface) => JSON.stringify(state)));
+    public get slackToken(): string {
+        return this._slackToken || defaultSlackToken;
     }
 
-    public restoreState(serviceData: DataStorageInterface): void {
+    public set slackToken(slackToken: string) {
+        this._slackToken = slackToken;
+    }
+
+    public get slackChannel(): string {
+        return this._slackChannel || defaultSlackChannel;
+    }
+
+    public set slackChannel(slackChannel: string) {
+        this._slackChannel = slackChannel;
+    }
+
+    public getState$(): Observable<string> {
+        return this._state.pipe(map((state: DataStorageInterface) => JSON.stringify(compressSettings(state))));
+    }
+
+    public restoreState(minimizedServiceData: MinimizedDataStorageInterface): void {
+        const serviceData = decompressSettings(minimizedServiceData);
+
         this._teamMembers = serviceData.teamMembers;
         this._roles = serviceData.roles;
         this._rolesMap = serviceData.rolesMap;
         this._randomizerMode = serviceData.randomizerMode;
         this._instantChoice = serviceData.instantChoice;
+        this._slackToken = serviceData.slackToken;
+        this._slackChannel = serviceData.slackChannel;
+        this._isPrivateChannel = serviceData.isPrivateChannel;
 
         this.updateState();
     }
@@ -94,6 +130,9 @@ export class DataStorageService {
             rolesMap: this.rolesMap,
             randomizerMode: this.randomizerMode,
             instantChoice: this.instantChoice,
+            slackToken: this.slackToken,
+            slackChannel: this.slackChannel,
+            isPrivateChannel: this.isPrivateChannel,
         });
     }
 }
